@@ -1,0 +1,106 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+
+export default function SignUpPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    // TODO: wire Supabase auth
+    await new Promise((r) => setTimeout(r, 800));
+    setSent(true);
+    setLoading(false);
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center px-5">
+      <Link href="/" className="flex items-center gap-2 mb-10">
+        <span className="text-2xl">🐦</span>
+        <span className="font-semibold text-[#1d1d1f] text-lg tracking-tight">Perched</span>
+      </Link>
+
+      <div className="w-full max-w-sm bg-white rounded-3xl shadow-apple-md p-8">
+        {sent ? (
+          <div className="text-center">
+            <div className="text-5xl mb-4">📬</div>
+            <h2 className="text-xl font-bold text-[#1d1d1f] mb-2">Check your inbox</h2>
+            <p className="text-sm text-[#6e6e73] leading-relaxed">We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.</p>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold text-[#1d1d1f] mb-1">Create account</h1>
+            <p className="text-sm text-[#6e6e73] mb-7">Start tracking your perks for free.</p>
+
+            {/* Social auth */}
+            <div className="space-y-2.5 mb-6">
+              <button className="w-full flex items-center justify-center gap-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-2xl h-12 text-sm font-medium text-[#1d1d1f] transition-colors">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm5.917 6.467c.15.44.108.937-.108 1.35-.433.84-1.35 1.283-2.267 1.283-.433 0-.867-.108-1.25-.325l-.058-.033c-.008.167-.017.317-.017.442 0 1.983-1.517 3.6-3.383 3.6-.483 0-.942-.108-1.358-.3-.217 1.042.183 2.142.983 2.75.45.342 1.008.525 1.583.525 1.467 0 2.717-.983 3.05-2.4.025-.117.042-.233.058-.35.05.017.108.017.158.017 1.108 0 2-.9 2-2 0-.083-.008-.167-.017-.25a3.35 3.35 0 001.567-2.308z"/>
+                </svg>
+                Continue with Apple
+              </button>
+              <button className="w-full flex items-center justify-center gap-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-2xl h-12 text-sm font-medium text-[#1d1d1f] transition-colors">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-px bg-[#e8e8ed]"/>
+              <span className="text-xs text-[#aeaeb2] font-medium">or</span>
+              <div className="flex-1 h-px bg-[#e8e8ed]"/>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-[#6e6e73] mb-1.5 uppercase tracking-wide">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#007aff] focus:bg-white rounded-xl h-11 px-3.5 text-sm text-[#1d1d1f] placeholder:text-[#aeaeb2] outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#6e6e73] mb-1.5 uppercase tracking-wide">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  required
+                  minLength={8}
+                  className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#007aff] focus:bg-white rounded-xl h-11 px-3.5 text-sm text-[#1d1d1f] placeholder:text-[#aeaeb2] outline-none transition-all"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#1d1d1f] text-white h-12 rounded-2xl text-sm font-semibold hover:bg-[#3d3d3f] transition-all disabled:opacity-50 mt-1"
+              >
+                {loading ? "Creating account…" : "Create account"}
+              </button>
+            </form>
+
+            <p className="text-xs text-[#aeaeb2] text-center mt-6">
+              Already have an account?{" "}
+              <Link href="/auth/signin" className="text-[#007aff] font-medium hover:underline">Sign in</Link>
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
