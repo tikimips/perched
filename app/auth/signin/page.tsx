@@ -1,18 +1,44 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
 
 export default function SignInPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    // TODO: wire Supabase auth → redirect to /dashboard
-    setLoading(false);
+    setError("");
+    const supabase = createClient();
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    if (err) {
+      setError(err.message);
+      setLoading(false);
+    } else {
+      router.push("/dashboard");
+    }
+  }
+
+  async function handleApple() {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "apple",
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
+  }
+
+  async function handleGoogle() {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
   }
 
   return (
@@ -27,13 +53,15 @@ export default function SignInPage() {
         <p className="text-sm text-[#6e6e73] mb-7">Sign in to see your perks.</p>
 
         <div className="space-y-2.5 mb-6">
-          <button className="w-full flex items-center justify-center gap-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-2xl h-12 text-sm font-medium text-[#1d1d1f] transition-colors">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm5.917 6.467c.15.44.108.937-.108 1.35-.433.84-1.35 1.283-2.267 1.283-.433 0-.867-.108-1.25-.325l-.058-.033c-.008.167-.017.317-.017.442 0 1.983-1.517 3.6-3.383 3.6-.483 0-.942-.108-1.358-.3-.217 1.042.183 2.142.983 2.75.45.342 1.008.525 1.583.525 1.467 0 2.717-.983 3.05-2.4.025-.117.042-.233.058-.35.05.017.108.017.158.017 1.108 0 2-.9 2-2 0-.083-.008-.167-.017-.25a3.35 3.35 0 001.567-2.308z"/>
+          <button onClick={handleApple}
+            className="w-full flex items-center justify-center gap-3 bg-[#1d1d1f] hover:bg-[#3d3d3f] text-white rounded-2xl h-12 text-sm font-medium transition-colors">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
             Continue with Apple
           </button>
-          <button className="w-full flex items-center justify-center gap-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-2xl h-12 text-sm font-medium text-[#1d1d1f] transition-colors">
+          <button onClick={handleGoogle}
+            className="w-full flex items-center justify-center gap-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-2xl h-12 text-sm font-medium text-[#1d1d1f] transition-colors">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -50,10 +78,15 @@ export default function SignInPage() {
           <div className="flex-1 h-px bg-[#e8e8ed]"/>
         </div>
 
+        {error && (
+          <div className="bg-red-50 text-red-600 text-xs rounded-xl px-3.5 py-2.5 mb-4 font-medium">{error}</div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-medium text-[#6e6e73] mb-1.5 uppercase tracking-wide">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com" required
               className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#007aff] focus:bg-white rounded-xl h-11 px-3.5 text-sm text-[#1d1d1f] placeholder:text-[#aeaeb2] outline-none transition-all"/>
           </div>
           <div>
@@ -61,7 +94,8 @@ export default function SignInPage() {
               <label className="text-xs font-medium text-[#6e6e73] uppercase tracking-wide">Password</label>
               <Link href="/auth/forgot" className="text-xs text-[#007aff] hover:underline">Forgot?</Link>
             </div>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password" required
               className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#007aff] focus:bg-white rounded-xl h-11 px-3.5 text-sm text-[#1d1d1f] placeholder:text-[#aeaeb2] outline-none transition-all"/>
           </div>
           <button type="submit" disabled={loading}

@@ -1,12 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
 import { CARDS } from "@/lib/cards";
 
 export default function ManageCardsPage() {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(
-    new Set(["amex-platinum", "chase-sapphire-reserve", "capital-one-venture-x"])
-  );
+  const router = useRouter();
+  const supabase = createClient();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/auth/signin"); return; }
+      setUserId(user.id);
+      const { data } = await supabase
+        .from("perched_user_cards")
+        .select("card_id")
+        .eq("user_id", user.id);
+      if (data && data.length > 0) {
+        setSelectedIds(new Set(data.map((r: any) => r.card_id)));
+      }
+      setLoading(false);
+    }
+    load();
+  }, []);
 
   function toggle(id: string) {
     setSelectedIds((prev) => {
@@ -16,15 +38,54 @@ export default function ManageCardsPage() {
     });
   }
 
+  async function save() {
+    if (!userId) return;
+    setSaving(true);
+
+    // Get existing card rows
+    const { data: existing } = await supabase
+      .from("perched_user_cards")
+      .select("card_id")
+      .eq("user_id", userId);
+
+    const existingIds = new Set((existing || []).map((r: any) => r.card_id));
+    const toAdd = [...selectedIds].filter((id) => !existingIds.has(id));
+    const toRemove = [...existingIds].filter((id) => !selectedIds.has(id));
+
+    if (toAdd.length > 0) {
+      await supabase.from("perched_user_cards").insert(
+        toAdd.map((card_id) => ({ user_id: userId, card_id }))
+      );
+    }
+    if (toRemove.length > 0) {
+      await supabase.from("perched_user_cards")
+        .delete()
+        .eq("user_id", userId)
+        .in("card_id", toRemove);
+    }
+
+    router.push("/dashboard");
+  }
+
   const selectedCards = CARDS.filter((c) => selectedIds.has(c.id));
   const totalValue = selectedCards.reduce((s, c) => s + c.totalPerkValue, 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
+        <div className="text-4xl">🐦</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f5f5f7]">
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-3xl mx-auto px-5 h-14 flex items-center gap-3">
-          <Link href="/dashboard" className="text-[#007aff] text-sm font-medium hover:text-[#0056d3] transition-colors flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <Link href="/dashboard" className="text-[#007aff] text-sm font-medium hover:text-[#0056d3] flex items-center gap-1">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
             Dashboard
           </Link>
           <span className="text-[#d2d2d7]">/</span>
@@ -33,21 +94,19 @@ export default function ManageCardsPage() {
       </header>
 
       <main className="max-w-3xl mx-auto px-5 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1d1d1f] mb-2">Choose your cards</h1>
-          <p className="text-[#6e6e73]">Select the cards you carry. We'll show all their perks in your dashboard.</p>
-        </div>
+        <h1 className="text-3xl font-bold text-[#1d1d1f] mb-2">Choose your cards</h1>
+        <p className="text-[#6e6e73] mb-8">Select every card you carry. We'll track all their perks in your dashboard.</p>
 
-        {/* Summary pill */}
         {selectedIds.size > 0 && (
           <div className="bg-[#1d1d1f] text-white rounded-2xl p-4 mb-6 flex items-center justify-between">
             <div>
               <div className="text-sm font-semibold">{selectedIds.size} card{selectedIds.size !== 1 ? "s" : ""} selected</div>
-              <div className="text-xs text-white/60 mt-0.5">${totalValue.toLocaleString()} in annual perks</div>
+              <div className="text-xs text-white/50 mt-0.5">${totalValue.toLocaleString()} in annual perks</div>
             </div>
-            <Link href="/dashboard" className="bg-white text-[#1d1d1f] text-sm font-semibold px-4 py-2 rounded-xl hover:bg-[#f5f5f7] transition-colors">
-              Save & view →
-            </Link>
+            <button onClick={save} disabled={saving}
+              className="bg-[#d4a843] text-[#1d1d1f] text-sm font-bold px-5 py-2 rounded-xl hover:bg-[#ebc04a] transition-colors disabled:opacity-60">
+              {saving ? "Saving…" : "Save →"}
+            </button>
           </div>
         )}
 
@@ -55,14 +114,10 @@ export default function ManageCardsPage() {
           {CARDS.map((card) => {
             const selected = selectedIds.has(card.id);
             return (
-              <button
-                key={card.id}
-                onClick={() => toggle(card.id)}
+              <button key={card.id} onClick={() => toggle(card.id)}
                 className={`text-left bg-white rounded-3xl overflow-hidden shadow-card border-2 transition-all hover:-translate-y-0.5 hover:shadow-apple ${
-                  selected ? "border-[#007aff] shadow-apple" : "border-transparent"
-                }`}
-              >
-                {/* Card visual */}
+                  selected ? "border-[#007aff]" : "border-transparent"
+                }`}>
                 <div className="h-20 flex items-end p-4 relative" style={{ background: card.gradient }}>
                   {selected && (
                     <div className="absolute top-3 right-3 w-6 h-6 bg-[#007aff] rounded-full flex items-center justify-center">
