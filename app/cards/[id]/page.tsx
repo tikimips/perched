@@ -4,19 +4,19 @@ import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase";
-import { CARD_MAP, CATEGORIES, type Perk } from "@/lib/cards";
+import { CARD_MAP, CATEGORIES, type Card, type Perk } from "@/lib/cards";
 import { CATEGORY_ICONS, IconExclamationTriangle, IconChevronLeft } from "@/components/Icon";
 
 const FREQ_LABELS: Record<string, string> = {
-  annual:      "Annual credit",
+  annual:        "Annual credit",
   "semi-annual": "Semi-annual credit",
-  monthly:     "Monthly credit",
-  quarterly:   "Quarterly credit",
-  "one-time":  "One-time credit",
+  monthly:       "Monthly credit",
+  quarterly:     "Quarterly credit",
+  "one-time":    "One-time credit",
 };
 
-function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
-  perk: Perk; isUsed: boolean; onToggle: () => void; isLoggedIn: boolean;
+function PerkCard({ perk, isUsed, onToggle, isLoggedIn, rewardsUrl }: {
+  perk: Perk; isUsed: boolean; onToggle: () => void; isLoggedIn: boolean; rewardsUrl: string;
 }) {
   const cat = CATEGORIES[perk.category];
   const CatIcon = CATEGORY_ICONS[perk.category];
@@ -32,7 +32,19 @@ function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
             <div className="text-[11px] text-[#aeaeb2] font-medium uppercase tracking-wider mt-0.5">{FREQ_LABELS[perk.frequency] || perk.frequency}</div>
           </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Source link */}
+          <a
+            href={perk.sourceUrl || rewardsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-6 h-6 flex items-center justify-center text-[#aeaeb2] hover:text-[#1d1d1f] transition-colors"
+            title="Official source"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 11L11 1M11 1H5M11 1V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
           {perk.value > 0 && (
             <span className={`text-xl font-bold ${isUsed ? "text-[#aeaeb2] line-through" : "text-[#1d1d1f]"}`}>
               ${perk.value}
@@ -72,9 +84,13 @@ function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
   );
 }
 
+function formatFee(n: number) {
+  return `$${n.toLocaleString()}`;
+}
+
 export default function CardDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const card = CARD_MAP[id];
+  const card = CARD_MAP[id] as Card | undefined;
 
   const [usedPerkIds, setUsedPerkIds] = useState<Set<string>>(new Set());
   const [userId, setUserId] = useState<string | null>(null);
@@ -93,7 +109,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
         .eq("user_id", user.id)
         .eq("is_used", true)
         .eq("period_year", year);
-      if (data) setUsedPerkIds(new Set(data.map((r: any) => r.perk_id)));
+      if (data) setUsedPerkIds(new Set(data.map((r: { perk_id: string }) => r.perk_id)));
     });
   }, []);
 
@@ -118,7 +134,6 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
-  // Group perks by category
   const usedValue = card.perks.filter(p => usedPerkIds.has(p.id)).reduce((s, p) => s + p.value, 0);
   const unclaimed = card.perks.filter(p => !usedPerkIds.has(p.id) && p.value > 0).reduce((s, p) => s + p.value, 0);
 
@@ -139,6 +154,13 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
 
+      {/* Invite-only banner */}
+      {card.inviteOnly && (
+        <div className="bg-[#d4a843]/10 border-b border-[#d4a843]/20 px-6 py-3 text-center">
+          <span className="text-xs font-semibold text-[#a07820] tracking-wide uppercase">✦ By Invitation Only — This card is not publicly available</span>
+        </div>
+      )}
+
       <main className="max-w-3xl mx-auto px-5 py-8">
         {/* Card hero */}
         <div className="rounded-3xl overflow-hidden shadow-apple-md mb-6">
@@ -146,7 +168,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
           <div className="h-44 flex flex-col justify-between p-6 relative" style={{ background: card.gradient }}>
             <div>
               <div className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: card.accentColor }}>{card.issuer}</div>
-              <div className="text-3xl font-bold text-white">{card.name}</div>
+              <div className="text-3xl font-bold" style={{ color: card.textColor }}>{card.name}</div>
             </div>
             <div className="flex items-end justify-between">
               <div>
@@ -155,7 +177,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
               </div>
               <div className="text-right">
                 <div className="text-[10px] text-white/50 uppercase tracking-wider font-medium mb-0.5">Annual fee</div>
-                <div className="text-lg font-bold text-white">{card.annualFee === 0 ? "None" : `$${card.annualFee}`}</div>
+                <div className="text-lg font-bold text-white">{card.annualFee === 0 ? "None" : `$${card.annualFee.toLocaleString()}`}</div>
               </div>
             </div>
           </div>
@@ -172,6 +194,64 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Card badges */}
+        <div className="bg-white rounded-2xl p-4 mb-4 border border-black/[0.06] space-y-2.5">
+          {card.creditScoreLabel && (
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-[#aeaeb2] uppercase tracking-wider font-medium w-28 shrink-0">Credit score</span>
+              <span className="text-[13px] font-semibold text-[#1d1d1f]">{card.creditScoreLabel}</span>
+            </div>
+          )}
+          {card.cardMaterial && (
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-[#aeaeb2] uppercase tracking-wider font-medium w-28 shrink-0">Material</span>
+              <span className="text-[13px] font-semibold text-[#1d1d1f]">{card.cardMaterial}</span>
+            </div>
+          )}
+          {card.initiationFee && (
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-[#aeaeb2] uppercase tracking-wider font-medium w-28 shrink-0">Initiation fee</span>
+              <span className="text-[13px] font-semibold text-[#d4a843]">One-time {formatFee(card.initiationFee)} initiation fee</span>
+            </div>
+          )}
+          {card.spendingRequirement && (
+            <div className="flex items-start gap-3">
+              <span className="text-[11px] text-[#aeaeb2] uppercase tracking-wider font-medium w-28 shrink-0 mt-0.5">Requirement</span>
+              <span className="text-[13px] text-[#6e6e73] leading-relaxed">{card.spendingRequirement}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Apply CTA */}
+        <div className="mb-6">
+          {card.inviteOnly ? (
+            <div className="flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-[#d4a843]/30 bg-[#d4a843]/5">
+              <span className="text-sm font-semibold text-[#a07820]">✦ Invitation required — not available to the public</span>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href={card.affiliateUrl || card.applyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-[#1d1d1f] text-white text-center py-3.5 rounded-2xl font-semibold text-[15px] hover:bg-[#3a3a3a] transition-colors"
+              >
+                Apply Now
+              </a>
+              {card.prequalUrl && (
+                <a
+                  href={card.prequalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 border border-black/[0.1] text-[#1d1d1f] text-center py-3.5 rounded-2xl font-semibold text-[15px] hover:bg-[#f5f5f7] transition-colors text-sm"
+                >
+                  Check approval odds (no credit impact)
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Description */}
@@ -205,6 +285,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
               isUsed={usedPerkIds.has(perk.id)}
               onToggle={() => togglePerk(perk.id)}
               isLoggedIn={!!userId}
+              rewardsUrl={card.rewardsUrl}
             />
           ))}
         </div>

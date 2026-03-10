@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARDS, CARD_MAP, CATEGORIES, type Perk } from "@/lib/cards";
-import { CATEGORY_ICONS, IconPerch } from "@/components/Icon";
+import { CATEGORY_ICONS, IconPerch, IconBell } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
 
 function PerkRow({ perk, cardName, isUsed, onToggle }: {
@@ -60,6 +60,17 @@ export default function DashboardPage() {
   const [pointsBalances, setPointsBalances] = useState<Record<string, string>>({});
   const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [seenPerkIds, setSeenPerkIds] = useState<Set<string>>(new Set());
+
+  // Load seen perk IDs from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("perched_seen_new_perks");
+      if (raw) setSeenPerkIds(new Set(JSON.parse(raw) as string[]));
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // Load user + their data
   useEffect(() => {
@@ -146,6 +157,7 @@ export default function DashboardPage() {
 
   const myCards = CARDS.filter((c) => myCardIds.includes(c.id));
   const allPerks = myCards.flatMap((c) => c.perks.map((p) => ({ ...p, cardName: `${c.issuer} ${c.name}` })));
+  const newPerkCount = myCards.flatMap((c) => c.perks.filter((p) => p.isNew && !seenPerkIds.has(p.id))).length;
   const filteredPerks = activeFilter === "all" ? allPerks : allPerks.filter((p) => p.category === activeFilter);
   const totalValue = myCards.reduce((s, c) => s + c.totalPerkValue, 0);
   const usedValue = allPerks.filter((p) => usedPerkIds.has(p.id) && p.value > 0).reduce((s, p) => s + p.value, 0);
@@ -177,6 +189,17 @@ export default function DashboardPage() {
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <Logo />
           <div className="flex items-center gap-3">
+            <Link href="/dashboard/notifications" className="relative flex items-center gap-1.5 text-sm font-medium text-[#6e6e73] hover:text-[#1d1d1f] transition-colors">
+              <span className="relative">
+                <IconBell size={18}/>
+                {newPerkCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#ff3b30] rounded-full text-[9px] text-white flex items-center justify-center font-bold leading-none">
+                    {newPerkCount}
+                  </span>
+                )}
+              </span>
+              <span className="hidden sm:inline">What's New</span>
+            </Link>
             <Link href="/dashboard/cards" className="text-sm font-medium text-[#007aff] hover:text-[#0056d3] transition-colors">
               My cards
             </Link>

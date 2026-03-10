@@ -10,6 +10,8 @@ export interface Perk {
   frequency: PerkFrequency;
   notes?: string;
   expires?: string;
+  sourceUrl?: string;
+  isNew?: boolean;
 }
 
 export interface Card {
@@ -24,6 +26,18 @@ export interface Card {
   accentColor: string;
   description: string;
   perks: Perk[];
+  // Apply / affiliate links
+  applyUrl: string;
+  affiliateUrl?: string; // TODO: swap for real affiliate URL when monetizing
+  rewardsUrl: string;
+  prequalUrl?: string;
+  // Card metadata
+  minCreditScore?: number;
+  creditScoreLabel?: string;
+  inviteOnly?: boolean;
+  initiationFee?: number;
+  spendingRequirement?: string;
+  cardMaterial?: string;
 }
 
 export const CARDS: Card[] = [
@@ -39,6 +53,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#C8CAD8",
     description: "The flagship premium card for the frequent traveler.",
+    applyUrl: "https://americanexpress.com/us/credit-cards/card/platinum/",
+    rewardsUrl: "https://www.americanexpress.com/us/credit-cards/card/platinum/#benefits",
+    prequalUrl: "https://www.americanexpress.com/us/credit-cards/pre-qualify/",
+    minCreditScore: 720,
+    creditScoreLabel: "Excellent (720+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "amex-plat-airline", name: "$200 Airline Fee Credit", description: "Up to $200 per year in statement credits for incidental fees with your one selected qualifying airline (bag fees, seat upgrades, in-flight food, etc.).", value: 200, category: "travel", frequency: "annual", notes: "Select your airline each January. Resets Jan 1." },
@@ -99,6 +119,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#F2D88B",
     description: "Built for people who spend on food and dining.",
+    applyUrl: "https://americanexpress.com/us/credit-cards/card/gold-card/",
+    rewardsUrl: "https://www.americanexpress.com/us/credit-cards/card/gold-card/#benefits",
+    prequalUrl: "https://www.americanexpress.com/us/credit-cards/pre-qualify/",
+    minCreditScore: 700,
+    creditScoreLabel: "Good (700+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "amex-gold-dining", name: "$120 Dining Credit", description: "$10 per month in statement credits when you use your card at Grubhub, The Cheesecake Factory, Goldbelly, Wine.com, and Five Guys.", value: 120, category: "dining", frequency: "annual", notes: "$10/month. Must use at enrolled merchants." },
@@ -134,6 +160,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#e94560",
     description: "The premium travel card with a generous annual travel credit.",
+    applyUrl: "https://creditcards.chase.com/travel-credit-cards/sapphire/reserve",
+    rewardsUrl: "https://creditcards.chase.com/travel-credit-cards/sapphire/reserve",
+    prequalUrl: "https://www.chase.com/personal/credit-cards/check-without-applying",
+    minCreditScore: 720,
+    creditScoreLabel: "Excellent (720+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "csr-travel", name: "$300 Annual Travel Credit", description: "Up to $300 in statement credits per year automatically applied to any travel purchases — flights, hotels, taxis, tolls, parking, Uber, Airbnb, and more.", value: 300, category: "travel", frequency: "annual", notes: "Resets on account anniversary. Very broad definition of 'travel.'" },
@@ -175,6 +207,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#93c5fd",
     description: "The best entry-level travel rewards card on the market.",
+    applyUrl: "https://creditcards.chase.com/travel-credit-cards/sapphire/preferred",
+    rewardsUrl: "https://creditcards.chase.com/travel-credit-cards/sapphire/preferred",
+    prequalUrl: "https://www.chase.com/personal/credit-cards/check-without-applying",
+    minCreditScore: 700,
+    creditScoreLabel: "Good (700+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "csp-hotel", name: "$50 Annual Hotel Credit", description: "Up to $50 in statement credits per year for hotel stays booked through Chase Travel.", value: 50, category: "travel", frequency: "annual" },
@@ -209,6 +247,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#d4a843",
     description: "Premium travel rewards with a straightforward value proposition.",
+    applyUrl: "https://capitalone.com/credit-cards/venture-x/",
+    rewardsUrl: "https://capitalone.com/credit-cards/venture-x/",
+    prequalUrl: "https://www.capitalone.com/credit-cards/preapprove/",
+    minCreditScore: 720,
+    creditScoreLabel: "Excellent (720+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "c1vx-travel", name: "$300 Capital One Travel Credit", description: "$300 annual credit for bookings made through the Capital One Travel portal — flights, hotels, rental cars.", value: 300, category: "travel", frequency: "annual", notes: "Must book through Capital One Travel." },
@@ -247,6 +291,12 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#ff6b6b",
     description: "The premium American Airlines card for frequent AA flyers.",
+    applyUrl: "https://www.citi.com/credit-cards/citi-aadvantage-executive-world-elite-mastercard",
+    rewardsUrl: "https://www.citi.com/credit-cards/citi-aadvantage-executive-world-elite-mastercard",
+    prequalUrl: "https://www.citi.com/credit-cards/pre-qualified-offers.do",
+    minCreditScore: 720,
+    creditScoreLabel: "Excellent (720+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Lounge ──
       { id: "citi-aa-lounge", name: "Admirals Club Membership", description: "Full Admirals Club membership for the primary cardholder plus immediate family members (or up to 2 guests). Access to 50+ Admirals Club lounges worldwide and partner lounges on international itineraries.", value: 0, category: "lounge", frequency: "annual", notes: "Standalone membership is $850/year. Includes authorized user access." },
@@ -286,6 +336,11 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#7ec8e3",
     description: "The hidden gem for mobile wallet users and real-time mobile pay.",
+    applyUrl: "https://www.usbank.com/credit-cards/altitude-reserve-visa-infinite-credit-card.html",
+    rewardsUrl: "https://www.usbank.com/credit-cards/altitude-reserve-visa-infinite-credit-card.html",
+    minCreditScore: 720,
+    creditScoreLabel: "Excellent (720+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Credits ──
       { id: "usb-travel", name: "$325 Annual Travel / Mobile Wallet Credit", description: "Up to $325 per year in statement credits for travel and mobile wallet purchases — flights, hotels, rideshare, Uber, Lyft, and more.", value: 325, category: "travel", frequency: "annual", notes: "Very broad category includes most mobile pay purchases." },
@@ -321,6 +376,11 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#f5c842",
     description: "3% cash back on everything. Requires Robinhood Gold ($5/mo).",
+    applyUrl: "https://robinhood.com/creditcard/",
+    rewardsUrl: "https://robinhood.com/creditcard/",
+    minCreditScore: 670,
+    creditScoreLabel: "Good (670+)",
+    cardMaterial: "Metal",
     perks: [
       // ── Rewards ──
       { id: "rh-gold-cashback-all", name: "3% Cash Back on All Purchases", description: "Unlimited 3% cash back on every purchase, with no rotating categories, no caps, and no annual limit.", value: 0, category: "other", frequency: "annual", notes: "Deposited daily into your Robinhood brokerage account." },
@@ -359,6 +419,11 @@ export const CARDS: Card[] = [
     textColor: "#ffffff",
     accentColor: "#a5f3fc",
     description: "Earn crypto rewards in real time on every purchase. No annual fee.",
+    applyUrl: "https://www.gemini.com/credit-card",
+    rewardsUrl: "https://www.gemini.com/credit-card",
+    minCreditScore: 640,
+    creditScoreLabel: "Fair (640+)",
+    cardMaterial: "Plastic",
     perks: [
       // ── Rewards ──
       { id: "gem-dining", name: "3% Back on Dining (in Crypto)", description: "3% back in Bitcoin or your preferred cryptocurrency on all restaurant, food delivery, and dining purchases. Rewards credited to your Gemini account in real time.", value: 0, category: "dining", frequency: "annual", notes: "Value fluctuates with crypto prices. Choose from 60+ crypto assets." },
@@ -377,6 +442,182 @@ export const CARDS: Card[] = [
       // ── Other ──
       { id: "gem-no-foreign", name: "No Foreign Transaction Fees", description: "No fees on international purchases.", value: 0, category: "travel", frequency: "annual" },
       { id: "gem-instant-rewards", name: "Real-Time Crypto Rewards", description: "Every reward is credited to your Gemini account instantly after each purchase — no waiting for a statement to close.", value: 0, category: "other", frequency: "annual" },
+    ],
+  },
+
+  // ─── Amex Centurion Black Card ────────────────────────────────────────────
+  {
+    id: "amex-centurion",
+    name: "Centurion® Card",
+    issuer: "American Express",
+    network: "Amex",
+    annualFee: 5000,
+    initiationFee: 10000,
+    totalPerkValue: 15000,
+    gradient: "linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3a3a3a 100%)",
+    textColor: "#ffffff",
+    accentColor: "#d4a843",
+    description: "The most exclusive charge card in existence. By invitation only. No credit limit. Anodized titanium construction.",
+    applyUrl: "https://www.americanexpress.com/us/credit-cards/card/centurion/",
+    rewardsUrl: "https://www.americanexpress.com/us/credit-cards/card/centurion/",
+    inviteOnly: true,
+    spendingRequirement: "~$350,000–$500,000+/year on American Express cards",
+    minCreditScore: 800,
+    creditScoreLabel: "Exceptional (800+) — invite only",
+    cardMaterial: "Anodized Titanium",
+    perks: [
+      { id: "centurion-advisor", name: "Personal Centurion Advisor", description: "A dedicated, named Centurion Advisor assigned personally to you — available 24/7. Not a call center. Your advisor knows your preferences, travel patterns, and handles requests proactively.", value: 0, category: "other", frequency: "annual" },
+      { id: "centurion-lounge", name: "Centurion Lounge + Unlimited Guests", description: "Unlimited access to all Centurion Lounges worldwide with unlimited complimentary guests — no guest fee, ever. Includes the most premium airports: JFK, LAX, SFO, LAS, SEA, DFW, MIA, and international locations.", value: 0, category: "lounge", frequency: "annual" },
+      { id: "centurion-delta-status", name: "Delta Platinum Medallion Status", description: "Automatic Delta Platinum Medallion status — complimentary upgrades, priority check-in, extra miles earning, and priority boarding on Delta flights.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-marriott-status", name: "Marriott Bonvoy Titanium Elite Status", description: "Automatic Marriott Bonvoy Titanium Elite status — suite upgrades, late checkout, 75% bonus points, and access to Your24 flexible check-in/out.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-hilton-status", name: "Hilton Honors Diamond Status", description: "Automatic Hilton Honors Diamond status — room upgrades, executive lounge access, complimentary breakfast, and 100% bonus points.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-companion-ticket", name: "Complimentary Companion Airline Ticket", description: "One complimentary companion airline ticket per year (up to $500 value) when you purchase a qualifying full-fare ticket.", value: 500, category: "travel", frequency: "annual" },
+      { id: "centurion-airline-credit", name: "$500 Airline Fee Credit", description: "Up to $500 per year in statement credits for airline fees with your selected airline — bags, seat upgrades, lounge day passes, and more.", value: 500, category: "travel", frequency: "annual" },
+      { id: "centurion-fhr-credit", name: "$500 Fine Hotels + Resorts Credit", description: "Up to $500 per year toward Fine Hotels + Resorts stays booked through Amex Travel.", value: 500, category: "travel", frequency: "annual" },
+      { id: "centurion-fhr-benefits", name: "Enhanced Fine Hotels + Resorts Benefits", description: "Automatic suite upgrades, spa treatment for two, daily breakfast for two, and a dedicated property liaison at every Fine Hotels + Resorts stay.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-wheels-up", name: "Private Jet Access via Wheels Up", description: "Preferred access to Wheels Up private aviation network — discounted membership and access to charter flights across the US and internationally.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-rental-car-status", name: "Top-Tier Rental Car Status (All Major Brands)", description: "Automatic top-tier elite status with all major rental car companies — Hertz President's Circle, Avis Chairman's, National Executive Elite, Sixt Platinum, and Silvercar preferred access.", value: 0, category: "travel", frequency: "annual" },
+      { id: "centurion-clear-credit", name: "$500 CLEAR Plus Credit", description: "Up to $500 per year in CLEAR Plus credits — covers the cardholder plus up to 3 family members' CLEAR memberships.", value: 500, category: "travel", frequency: "annual" },
+      { id: "centurion-saks-credit", name: "$250 Saks Fifth Avenue Credit", description: "$125 semi-annually ($250/year) in statement credits at Saks Fifth Avenue stores or saks.com.", value: 250, category: "shopping", frequency: "annual", notes: "$125 Jan–Jun, $125 Jul–Dec" },
+      { id: "centurion-equinox-credit", name: "$500 Equinox Credit", description: "Up to $500 per year in statement credits toward Equinox club membership or Equinox+ digital app.", value: 500, category: "wellness", frequency: "annual" },
+      { id: "centurion-bio-events", name: "By Invitation Only Events", description: "Exclusive access to fashion week front rows, Grammy after-parties, award show seating, private gallery openings, and curated cultural experiences unavailable to the public.", value: 0, category: "entertainment", frequency: "annual" },
+      { id: "centurion-no-limit", name: "No Preset Spending Limit", description: "No preset credit limit — your spending power adjusts based on your usage, payment history, and financial profile.", value: 0, category: "other", frequency: "annual" },
+      { id: "centurion-trip-cancel", name: "Trip Cancellation Insurance ($10k/trip)", description: "Up to $10,000 per trip in coverage for non-refundable travel expenses if your trip is cancelled or interrupted due to a covered reason.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "centurion-purchase-protection", name: "Purchase Protection ($10k/claim)", description: "Up to $10,000 per claim and $50,000 per year against theft or accidental damage for eligible purchases.", value: 0, category: "insurance", frequency: "annual" },
+    ],
+  },
+
+  // ─── JPMorgan Reserve Card ────────────────────────────────────────────────
+  {
+    id: "jpmorgan-reserve",
+    name: "Reserve Card",
+    issuer: "J.P. Morgan",
+    network: "Visa",
+    annualFee: 595,
+    totalPerkValue: 1200,
+    gradient: "linear-gradient(135deg, #2c1810 0%, #8B6914 50%, #C9A84C 100%)",
+    textColor: "#ffffff",
+    accentColor: "#F2D88B",
+    description: "The world's most prestigious metal card. Palladium and gold construction, weighing 28 grams. J.P. Morgan Private Bank clients only.",
+    applyUrl: "https://www.jpmorgan.com/wealth-management",
+    rewardsUrl: "https://www.jpmorgan.com/wealth-management",
+    inviteOnly: true,
+    spendingRequirement: "Must be a J.P. Morgan Private Client (typically $10M+ in investable assets)",
+    minCreditScore: 800,
+    creditScoreLabel: "Exceptional (800+) — J.P. Morgan Private Client only",
+    cardMaterial: "Palladium & Gold (28-gram metal card)",
+    perks: [
+      { id: "jpmorgan-priority-pass", name: "Priority Pass Select — Unlimited", description: "Unlimited Priority Pass lounge access for the cardholder and guests at 1,400+ airport lounges worldwide.", value: 0, category: "lounge", frequency: "annual" },
+      { id: "jpmorgan-travel-credit", name: "$300 Annual Travel Credit", description: "Up to $300 per year in statement credits for travel purchases — flights, hotels, car rentals, and more.", value: 300, category: "travel", frequency: "annual" },
+      { id: "jpmorgan-anniversary-points", name: "10,000 Anniversary Bonus Points", description: "10,000 bonus Ultimate Rewards-equivalent points on your account anniversary each year — worth approximately $100 in travel.", value: 100, category: "travel", frequency: "annual" },
+      { id: "jpmorgan-global-entry", name: "$120 Global Entry Credit", description: "Statement credit for Global Entry application fee (includes TSA PreCheck) every 4 years.", value: 120, category: "travel", frequency: "one-time", notes: "Every 4 years." },
+      { id: "jpmorgan-hotel-benefits", name: "Luxury Hotel Benefits", description: "Complimentary breakfast, room upgrade, and a $100 on-property credit at luxury partner hotels when booked through J.P. Morgan's preferred hotel program.", value: 0, category: "travel", frequency: "annual" },
+      { id: "jpmorgan-car-rental", name: "Primary Auto Rental CDW", description: "Primary collision damage waiver on eligible car rentals — no need to involve your personal auto insurance first.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "jpmorgan-trip-cancel", name: "Trip Cancellation & Interruption Insurance", description: "Coverage for non-refundable travel expenses if your trip is cancelled or interrupted due to a covered reason.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "jpmorgan-concierge", name: "J.P. Morgan Concierge", description: "24/7 dedicated J.P. Morgan concierge service for travel arrangements, restaurant reservations, event tickets, and personal requests.", value: 0, category: "other", frequency: "annual" },
+      { id: "jpmorgan-restaurant-priority", name: "Priority Restaurant Reservations", description: "Priority access to coveted restaurant reservations at top-tier establishments through J.P. Morgan's exclusive restaurant network.", value: 0, category: "dining", frequency: "annual" },
+      { id: "jpmorgan-no-foreign", name: "No Foreign Transaction Fees", description: "No fees on purchases made outside the US or in a foreign currency.", value: 0, category: "travel", frequency: "annual" },
+      { id: "jpmorgan-palladium-card", name: "The Physical Palladium Card", description: "The card itself weighs 28 grams — made from palladium and gold. One of the most recognizable status symbols in the world.", value: 0, category: "other", frequency: "one-time" },
+    ],
+  },
+
+  // ─── Luxury Card Mastercard Gold Card ─────────────────────────────────────
+  {
+    id: "luxury-card-gold",
+    name: "Mastercard® Gold Card™",
+    issuer: "Barclays / Luxury Card",
+    network: "Mastercard",
+    annualFee: 995,
+    totalPerkValue: 800,
+    gradient: "linear-gradient(135deg, #C9A84C 0%, #b8933c 50%, #D4A843 100%)",
+    textColor: "#ffffff",
+    accentColor: "#F2D88B",
+    description: "24-karat gold-plated stainless steel card. The highest tier Luxury Card with premium travel benefits.",
+    applyUrl: "https://www.luxurycard.com/gold-card/",
+    rewardsUrl: "https://www.luxurycard.com/gold-card/benefits/",
+    prequalUrl: "https://www.luxurycard.com/gold-card/",
+    minCreditScore: 750,
+    creditScoreLabel: "Excellent (750+)",
+    cardMaterial: "24K Gold-Plated Stainless Steel",
+    perks: [
+      { id: "luxury-gold-airline-credit", name: "$200 Airline Credit", description: "Up to $200 per year in statement credits for airline fees and purchases.", value: 200, category: "travel", frequency: "annual" },
+      { id: "luxury-gold-hotel-credit", name: "$200 Hotel Credit", description: "Up to $200 per year in statement credits for hotel stays.", value: 200, category: "travel", frequency: "annual" },
+      { id: "luxury-gold-airfare-redemption", name: "2% Airfare Redemption", description: "Redeem rewards at 2% value when used for airfare — higher than most cards' base redemption rates.", value: 0, category: "travel", frequency: "annual" },
+      { id: "luxury-gold-cashback", name: "2% Cash Back Redemption", description: "Redeem rewards at 2% value for cash back deposits.", value: 0, category: "other", frequency: "annual" },
+      { id: "luxury-gold-priority-pass", name: "Priority Pass Unlimited Membership", description: "Unlimited Priority Pass lounge access at 1,300+ lounges worldwide.", value: 0, category: "lounge", frequency: "annual" },
+      { id: "luxury-gold-concierge", name: "24/7 Luxury Card Concierge", description: "Round-the-clock concierge service for travel, dining, entertainment, and personal requests.", value: 0, category: "other", frequency: "annual" },
+      { id: "luxury-gold-global-entry", name: "$120 Global Entry Credit", description: "Statement credit for Global Entry ($120) or TSA PreCheck application fee.", value: 120, category: "travel", frequency: "one-time", notes: "Every 4.5 years." },
+      { id: "luxury-gold-car-rental", name: "Primary Rental CDW", description: "Primary collision damage waiver on eligible car rentals.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-gold-trip-cancel", name: "Trip Cancellation Insurance", description: "Coverage for non-refundable travel expenses for covered cancellations and interruptions.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-gold-purchase", name: "Purchase Protection", description: "Covers eligible purchases against accidental damage or theft.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-gold-extended-warranty", name: "Extended Warranty", description: "Extends original manufacturer warranties on eligible purchases.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-gold-cell-phone", name: "Cell Phone Protection", description: "Coverage for theft or accidental damage to your cell phone.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-gold-no-foreign", name: "No Foreign Transaction Fees", description: "No fees on international purchases.", value: 0, category: "travel", frequency: "annual" },
+    ],
+  },
+
+  // ─── Luxury Card Mastercard Black Card ────────────────────────────────────
+  {
+    id: "luxury-card-black",
+    name: "Mastercard® Black Card™",
+    issuer: "Barclays / Luxury Card",
+    network: "Mastercard",
+    annualFee: 495,
+    totalPerkValue: 400,
+    gradient: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #404040 100%)",
+    textColor: "#ffffff",
+    accentColor: "#888888",
+    description: "Carbon fiber construction with PVD coating. Premium benefits at a mid-tier annual fee.",
+    applyUrl: "https://www.luxurycard.com/black-card/",
+    rewardsUrl: "https://www.luxurycard.com/black-card/benefits/",
+    prequalUrl: "https://www.luxurycard.com/black-card/",
+    minCreditScore: 740,
+    creditScoreLabel: "Excellent (740+)",
+    cardMaterial: "Carbon Fiber with PVD Coating",
+    perks: [
+      { id: "luxury-black-airline-credit", name: "$100 Airline Credit", description: "Up to $100 per year in statement credits for airline fees and purchases.", value: 100, category: "travel", frequency: "annual" },
+      { id: "luxury-black-airfare-redemption", name: "2% Airfare Redemption", description: "Redeem rewards at 2% value when used for airfare purchases.", value: 0, category: "travel", frequency: "annual" },
+      { id: "luxury-black-cashback", name: "1.5% Cash Back Redemption", description: "Redeem rewards at 1.5% value for cash back deposits.", value: 0, category: "other", frequency: "annual" },
+      { id: "luxury-black-priority-pass", name: "Priority Pass (10 Visits/Year)", description: "Priority Pass membership with 10 complimentary lounge visits per year at 1,300+ airport lounges.", value: 0, category: "lounge", frequency: "annual", notes: "10 visits per year. Additional visits may be charged." },
+      { id: "luxury-black-concierge", name: "24/7 Luxury Card Concierge", description: "Round-the-clock concierge service for travel, dining, and personal requests.", value: 0, category: "other", frequency: "annual" },
+      { id: "luxury-black-global-entry", name: "$100 Global Entry Credit", description: "Statement credit for Global Entry or TSA PreCheck application fee.", value: 100, category: "travel", frequency: "one-time", notes: "Every 4.5 years." },
+      { id: "luxury-black-car-rental", name: "Car Rental CDW", description: "Collision damage waiver on eligible car rentals.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-black-trip-cancel", name: "Trip Cancellation Insurance", description: "Coverage for non-refundable travel expenses for covered cancellations.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-black-purchase", name: "Purchase Protection", description: "Covers eligible purchases against accidental damage or theft.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-black-cell-phone", name: "Cell Phone Protection", description: "Coverage for theft or accidental damage to your cell phone.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "luxury-black-no-foreign", name: "No Foreign Transaction Fees", description: "No fees on international purchases.", value: 0, category: "travel", frequency: "annual" },
+    ],
+  },
+
+  // ─── Dubai First Royale Mastercard ────────────────────────────────────────
+  {
+    id: "dubai-first-royale",
+    name: "Royale Mastercard",
+    issuer: "Dubai First Bank",
+    network: "Mastercard",
+    annualFee: 0,
+    totalPerkValue: 0,
+    gradient: "linear-gradient(135deg, #7c4f00 0%, #C9A84C 50%, #f5e6a3 100%)",
+    textColor: "#1a1000",
+    accentColor: "#7c4f00",
+    description: "~200 cards exist worldwide. Gold border, inlaid real diamond. No spending limit. No rules. A personal relationship manager 24/7.",
+    applyUrl: "https://www.dubaifirst.com/",
+    rewardsUrl: "https://www.dubaifirst.com/",
+    inviteOnly: true,
+    spendingRequirement: "By invitation only. Approximately 200 cards exist worldwide. Issued exclusively to royalty and the world's wealthiest individuals.",
+    minCreditScore: 850,
+    creditScoreLabel: "Invitation only — royalty and billionaires",
+    cardMaterial: "Gold border with inlaid real diamond",
+    perks: [
+      { id: "dubai-royale-no-limit", name: "No Credit Limit — No Rules", description: "Absolutely no credit limit and no spending restrictions. Buy anything, anywhere, at any time. No questions asked.", value: 0, category: "other", frequency: "annual" },
+      { id: "dubai-royale-relationship-manager", name: "Personal Relationship Manager 24/7", description: "A dedicated personal relationship manager — available around the clock, any day of the year, to handle any request worldwide.", value: 0, category: "other", frequency: "annual" },
+      { id: "dubai-royale-lounge", name: "Unlimited VIP Lounge Access (Global)", description: "Unlimited access to VIP and VVIP airport lounges globally — including private terminals used by heads of state and royalty.", value: 0, category: "lounge", frequency: "annual" },
+      { id: "dubai-royale-suite-upgrades", name: "Automatic Suite Upgrades — All Luxury Hotels", description: "Automatic suite upgrades at every luxury hotel worldwide. No request necessary.", value: 0, category: "travel", frequency: "annual" },
+      { id: "dubai-royale-private-jet", name: "Private Jet & Superyacht Charter Access", description: "On-demand access to private jet and superyacht charters anywhere in the world, arranged by your relationship manager.", value: 0, category: "travel", frequency: "annual" },
+      { id: "dubai-royale-private-shopping", name: "After-Hours Private Shopping", description: "Exclusive after-hours private shopping experiences at Hermès, Chanel, Louis Vuitton, and other luxury houses — arranged solely for you.", value: 0, category: "shopping", frequency: "annual" },
+      { id: "dubai-royale-medical", name: "VIP Medical Services", description: "Access to the world's top private medical facilities and physicians, with your relationship manager coordinating all arrangements.", value: 0, category: "wellness", frequency: "annual" },
+      { id: "dubai-royale-travel-insurance", name: "Unlimited Global Travel Insurance", description: "Comprehensive, unlimited global travel insurance with no coverage caps — covering any situation, anywhere in the world.", value: 0, category: "insurance", frequency: "annual" },
+      { id: "dubai-royale-physical-card", name: "The Physical Diamond-Inlaid Card", description: "The card itself — gold border with a real inlaid diamond. Approximately 200 exist in the world. A physical symbol of belonging to the world's most exclusive financial tier.", value: 0, category: "other", frequency: "one-time" },
     ],
   },
 ];

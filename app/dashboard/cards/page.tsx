@@ -6,6 +6,22 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARDS } from "@/lib/cards";
 
+const CREDIT_SCORE_OPTIONS = [
+  { label: "Exceptional 800+", value: 800 },
+  { label: "Excellent 750+",   value: 750 },
+  { label: "Good 700+",        value: 700 },
+  { label: "Fair 640+",        value: 640 },
+  { label: "Building",         value: 580 },
+];
+
+function getApprovalBadge(creditScore: number | null, minCreditScore: number | undefined, inviteOnly: boolean | undefined) {
+  if (inviteOnly) return { label: "Invite only", className: "bg-[#d4a843]/10 text-[#a07820] border border-[#d4a843]/30" };
+  if (creditScore === null || minCreditScore === undefined) return null;
+  if (creditScore >= minCreditScore) return { label: "Strong odds", className: "bg-[#34c759]/10 text-[#1a7a38] border border-[#34c759]/30" };
+  if (creditScore >= minCreditScore - 30) return { label: "Fair odds", className: "bg-[#ff9f0a]/10 text-[#a05f00] border border-[#ff9f0a]/30" };
+  return { label: "Low odds", className: "bg-[#ff3b30]/10 text-[#9b2118] border border-[#ff3b30]/30" };
+}
+
 export default function ManageCardsPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -13,6 +29,13 @@ export default function ManageCardsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [creditScore, setCreditScore] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Load saved credit score from localStorage
+    const saved = localStorage.getItem("perched_credit_score");
+    if (saved) setCreditScore(parseInt(saved));
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -24,7 +47,7 @@ export default function ManageCardsPage() {
         .select("card_id")
         .eq("user_id", user.id);
       if (data && data.length > 0) {
-        setSelectedIds(new Set(data.map((r: any) => r.card_id)));
+        setSelectedIds(new Set(data.map((r: { card_id: string }) => r.card_id)));
       }
       setLoading(false);
     }
@@ -43,13 +66,12 @@ export default function ManageCardsPage() {
     if (!userId) return;
     setSaving(true);
 
-    // Get existing card rows
     const { data: existing } = await supabase
       .from("perched_user_cards")
       .select("card_id")
       .eq("user_id", userId);
 
-    const existingIds = new Set((existing || []).map((r: any) => r.card_id));
+    const existingIds = new Set((existing || []).map((r: { card_id: string }) => r.card_id));
     const toAdd = [...selectedIds].filter((id) => !existingIds.has(id));
     const toRemove = [...existingIds].filter((id) => !selectedIds.has(id));
 
@@ -98,6 +120,32 @@ export default function ManageCardsPage() {
         <h1 className="text-3xl font-bold text-[#1d1d1f] mb-2">Choose your cards</h1>
         <p className="text-[#6e6e73] mb-8">Select every card you carry. We'll track all their perks in your dashboard.</p>
 
+        {/* Credit score selector */}
+        <div className="mb-6 p-4 bg-white rounded-2xl border border-black/[0.06]">
+          <p className="text-[13px] font-semibold text-[#1d1d1f] mb-3">
+            Your credit score range{" "}
+            <span className="font-normal text-[#aeaeb2]">(stored locally — helps show approval odds)</span>
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {CREDIT_SCORE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => {
+                  setCreditScore(opt.value);
+                  localStorage.setItem("perched_credit_score", String(opt.value));
+                }}
+                className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                  creditScore === opt.value
+                    ? "bg-[#1d1d1f] text-white"
+                    : "bg-[#f5f5f7] text-[#6e6e73] hover:bg-[#e5e5ea]"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {selectedIds.size > 0 && (
           <div className="bg-[#1d1d1f] text-white rounded-2xl p-4 mb-6 flex items-center justify-between">
             <div>
@@ -114,6 +162,7 @@ export default function ManageCardsPage() {
         <div className="grid sm:grid-cols-2 gap-4">
           {CARDS.map((card) => {
             const selected = selectedIds.has(card.id);
+            const badge = getApprovalBadge(creditScore, card.minCreditScore, card.inviteOnly);
             return (
               <button key={card.id} onClick={() => toggle(card.id)}
                 className={`text-left bg-white rounded-3xl overflow-hidden shadow-card border-2 transition-all hover:-translate-y-0.5 hover:shadow-apple ${
@@ -134,7 +183,7 @@ export default function ManageCardsPage() {
                 </div>
                 <div className="p-4">
                   <p className="text-xs text-[#6e6e73] mb-3 leading-relaxed">{card.description}</p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-[10px] text-[#aeaeb2] font-medium uppercase tracking-wide">Perk value</div>
                       <div className="text-lg font-bold text-[#1d1d1f]">${card.totalPerkValue.toLocaleString()}/yr</div>
@@ -144,8 +193,24 @@ export default function ManageCardsPage() {
                       <div className="text-sm font-semibold text-[#6e6e73]">${card.annualFee}/yr</div>
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-[#f5f5f7] text-xs text-[#aeaeb2]">
-                    {card.perks.length} perks tracked
+                  <div className="flex items-center justify-between pt-3 border-t border-[#f5f5f7]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#aeaeb2]">{card.perks.length} perks tracked</span>
+                      {badge && (
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${badge.className}`}>
+                          {badge.label}
+                        </span>
+                      )}
+                    </div>
+                    <a
+                      href={card.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[11px] text-[#007aff] font-medium hover:underline"
+                    >
+                      Apply →
+                    </a>
                   </div>
                 </div>
               </button>
