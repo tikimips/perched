@@ -34,9 +34,11 @@ function PerkRow({ perk, cardName, isUsed, onToggle }: {
             {CatIcon && <CatIcon size={14} className="mr-1.5 shrink-0 text-[#6e6e73]"/>}
             <span className="text-[15px] font-semibold text-[#1d1d1f]">{perk.name}</span>
           </div>
-          <span className={`shrink-0 text-[15px] font-bold ${isUsed ? "text-[#aeaeb2] line-through" : "text-[#1d1d1f]"}`}>
-            ${perk.value}
-          </span>
+          {perk.value > 0 && (
+            <span className={`shrink-0 text-[15px] font-bold ${isUsed ? "text-[#aeaeb2] line-through" : "text-[#1d1d1f]"}`}>
+              ${perk.value}
+            </span>
+          )}
         </div>
         <p className="text-xs text-[#6e6e73] mt-1 leading-relaxed line-clamp-2">{perk.description}</p>
         <div className="flex items-center gap-2 mt-2">
@@ -146,7 +148,7 @@ export default function DashboardPage() {
   const allPerks = myCards.flatMap((c) => c.perks.map((p) => ({ ...p, cardName: `${c.issuer} ${c.name}` })));
   const filteredPerks = activeFilter === "all" ? allPerks : allPerks.filter((p) => p.category === activeFilter);
   const totalValue = myCards.reduce((s, c) => s + c.totalPerkValue, 0);
-  const usedValue = allPerks.filter((p) => usedPerkIds.has(p.id)).reduce((s, p) => s + p.value, 0);
+  const usedValue = allPerks.filter((p) => usedPerkIds.has(p.id) && p.value > 0).reduce((s, p) => s + p.value, 0);
 
   const filters = [
     { key: "all", label: "All" },
