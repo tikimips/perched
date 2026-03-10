@@ -77,8 +77,9 @@ export default function DashboardPage() {
         });
         setPointsBalances(balances);
       } else {
-        // New user — show all cards as default
-        setMyCardIds(CARDS.map((c) => c.id));
+        // New user with no cards — send to onboarding
+        router.push("/onboarding");
+        return;
       }
 
       // Load used perks (current year)

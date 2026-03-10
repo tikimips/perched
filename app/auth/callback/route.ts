@@ -23,9 +23,16 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error && data.user) {
+      // Check if new user (no cards yet) → send to onboarding
+      const { data: cards } = await supabase
+        .from("perched_user_cards")
+        .select("card_id")
+        .eq("user_id", data.user.id)
+        .limit(1);
+      const destination = (!cards || cards.length === 0) ? "/onboarding" : next;
+      return NextResponse.redirect(`${origin}${destination}`);
     }
   }
 
