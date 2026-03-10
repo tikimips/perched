@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARDS } from "@/lib/cards";
+import { Logo } from "@/components/Logo";
 
 // ─── Illustrations ────────────────────────────────────────────────────────────
 
@@ -134,8 +135,7 @@ export default function OnboardingPage() {
         <div className="max-w-sm w-full">
           {/* Logo */}
           <div className="flex items-center justify-center gap-2 mb-12">
-            <span className="text-2xl">🐦</span>
-            <span className="font-semibold text-[#1d1d1f] text-lg tracking-tight">Perched</span>
+            <Logo size="lg"/>
           </div>
 
           {/* Illustration */}
@@ -174,8 +174,7 @@ export default function OnboardingPage() {
           <div className="max-w-2xl mx-auto px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🐦</span>
-                <span className="font-semibold text-[#1d1d1f] tracking-tight">Perched</span>
+                <Logo size="sm"/>
               </div>
               <StepDots current={1} total={3} />
             </div>
@@ -275,8 +274,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 text-center">
       <div className="max-w-sm w-full">
         <div className="flex items-center justify-center gap-2 mb-10">
-          <span className="text-2xl">🐦</span>
-          <span className="font-semibold text-[#1d1d1f] text-lg tracking-tight">Perched</span>
+          <Logo size="lg"/>
         </div>
 
         <div className="flex justify-center mb-6">

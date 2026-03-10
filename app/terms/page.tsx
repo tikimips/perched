@@ -1,3 +1,4 @@
+import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -8,10 +9,7 @@ export default function TermsPage() {
     <div className="min-h-screen bg-white">
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-3xl mx-auto px-5 h-14 flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl">🐦</span>
-            <span className="font-semibold text-[#1d1d1f] tracking-tight">Perched</span>
-          </Link>
+          <Logo/>
         </div>
       </nav>
 

@@ -1,4 +1,5 @@
 "use client";
+import { Logo } from "@/components/Logo";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,10 +36,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center px-5">
-      <Link href="/" className="flex items-center gap-2 mb-10">
-        <span className="text-2xl">🐦</span>
-        <span className="font-semibold text-[#1d1d1f] text-lg tracking-tight">Perched</span>
-      </Link>
+      <Logo/>
 
       <div className="w-full max-w-sm bg-white rounded-3xl shadow-apple-md p-8">
         <h1 className="text-2xl font-bold text-[#1d1d1f] mb-1">Welcome back</h1>

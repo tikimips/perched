@@ -202,13 +202,13 @@ export const CARDS: Card[] = [
 
 export const CARD_MAP: Record<string, Card> = Object.fromEntries(CARDS.map((c) => [c.id, c]));
 
-export const CATEGORIES: Record<PerkCategory, { label: string; emoji: string }> = {
-  travel:        { label: "Travel",        emoji: "✈️" },
-  dining:        { label: "Dining",        emoji: "🍽️" },
-  entertainment: { label: "Entertainment", emoji: "🎬" },
-  shopping:      { label: "Shopping",      emoji: "🛍️" },
-  wellness:      { label: "Wellness",      emoji: "💆" },
-  lounge:        { label: "Lounges",       emoji: "🛋️" },
-  insurance:     { label: "Insurance",     emoji: "🛡️" },
-  other:         { label: "Other",         emoji: "✨" },
+export const CATEGORIES: Record<PerkCategory, { label: string }> = {
+  travel:        { label: "Travel"        },
+  dining:        { label: "Dining"        },
+  entertainment: { label: "Entertainment" },
+  shopping:      { label: "Shopping"      },
+  wellness:      { label: "Wellness"      },
+  lounge:        { label: "Lounges"       },
+  insurance:     { label: "Insurance"     },
+  other:         { label: "Other"         },
 };

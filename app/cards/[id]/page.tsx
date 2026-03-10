@@ -1,9 +1,11 @@
 "use client";
+import { Logo } from "@/components/Logo";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARD_MAP, CATEGORIES, type Perk } from "@/lib/cards";
+import { CATEGORY_ICONS, IconWarning, IconChevronLeft } from "@/components/Icon";
 
 const FREQ_LABELS: Record<string, string> = {
   annual:      "Annual credit",
@@ -17,11 +19,14 @@ function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
   perk: Perk; isUsed: boolean; onToggle: () => void; isLoggedIn: boolean;
 }) {
   const cat = CATEGORIES[perk.category];
+  const CatIcon = CATEGORY_ICONS[perk.category];
   return (
     <div className={`bg-white rounded-3xl p-5 border-2 transition-all ${isUsed ? "border-[#34c759]/30 opacity-60" : "border-transparent shadow-card hover:shadow-apple"}`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl">{cat.emoji}</span>
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isUsed ? "bg-[#f5f5f7] text-[#aeaeb2]" : "bg-[#f5f5f7] text-[#1d1d1f]"}`}>
+            {CatIcon && <CatIcon size={18}/>}
+          </div>
           <div>
             <div className="text-[15px] font-semibold text-[#1d1d1f] leading-tight">{perk.name}</div>
             <div className="text-[11px] text-[#aeaeb2] font-medium uppercase tracking-wider mt-0.5">{FREQ_LABELS[perk.frequency] || perk.frequency}</div>
@@ -53,7 +58,7 @@ function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
       <p className="text-sm text-[#6e6e73] leading-relaxed">{perk.description}</p>
       {perk.notes && (
         <div className="mt-3 flex items-start gap-1.5">
-          <span className="text-[11px] text-[#aeaeb2]">⚠</span>
+          <IconWarning size={12} className="text-[#aeaeb2] shrink-0 mt-0.5"/>
           <p className="text-[11px] text-[#aeaeb2] leading-relaxed">{perk.notes}</p>
         </div>
       )}
@@ -126,9 +131,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
       <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-3xl mx-auto px-5 h-14 flex items-center gap-3">
           <Link href="/dashboard" className="text-[#007aff] text-sm font-medium flex items-center gap-1 hover:text-[#0056d3] transition-colors">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <IconChevronLeft size={16}/>
             Dashboard
           </Link>
           <span className="text-[#d2d2d7]">/</span>
@@ -178,13 +181,15 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
         {categories.length > 2 && (
           <div className="flex gap-2 overflow-x-auto pb-3 mb-5">
             {categories.map((cat) => {
-              const info = cat === "all" ? { label: "All perks", emoji: "✦" } : CATEGORIES[cat as keyof typeof CATEGORIES];
+              const label = cat === "all" ? "All perks" : CATEGORIES[cat as keyof typeof CATEGORIES]?.label;
+              const CatIcon = cat !== "all" ? CATEGORY_ICONS[cat] : null;
               return (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
-                  className={`shrink-0 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all ${
+                  className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all ${
                     activeCategory === cat ? "bg-[#1d1d1f] text-white" : "bg-white text-[#6e6e73] border border-black/[0.08] hover:bg-[#f5f5f7]"
                   }`}>
-                  {info?.emoji} {info?.label}
+                  {CatIcon && <CatIcon size={13}/>}
+                  {label}
                 </button>
               );
             })}
@@ -207,7 +212,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ id: strin
         {/* Not logged in CTA */}
         {!userId && (
           <div className="mt-8 bg-[#1d1d1f] rounded-3xl p-6 text-center">
-            <div className="text-2xl mb-2">🐦</div>
+            <div className="mb-2 text-[#1d1d1f] flex justify-center"><Logo size="lg"/></div>
             <h3 className="text-white font-bold text-lg mb-1">Track what you've used</h3>
             <p className="text-white/50 text-sm mb-4">Create a free account to mark perks as used and see your unclaimed value.</p>
             <Link href="/auth/signup" className="inline-block bg-[#d4a843] text-[#1d1d1f] px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-[#ebc04a] transition-colors">

@@ -1,5 +1,7 @@
+import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { CARDS } from "@/lib/cards";
+import { IconPerch, IconCreditCard, IconList, IconCheckCircle } from "@/components/Icon";
 
 // Simple bird illustration
 function BirdIllustration() {
@@ -165,28 +167,13 @@ export default function LandingPage() {
 
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              {
-                step: "01",
-                icon: "💳",
-                title: "Select your cards",
-                desc: "Pick the premium cards you carry. We pre-load every perk, credit, and benefit for each one.",
-              },
-              {
-                step: "02",
-                icon: "📋",
-                title: "See your full picture",
-                desc: "Every credit, every perk, every entitlement — laid out clearly. See the total dollar value you're entitled to.",
-              },
-              {
-                step: "03",
-                icon: "✅",
-                title: "Track what you've used",
-                desc: "Mark perks as used. See what's left. Never let a credit expire again.",
-              },
-            ].map(({ step, icon, title, desc }) => (
+              { step: "01", Icon: IconCreditCard, title: "Select your cards", desc: "Pick the premium cards you carry. We pre-load every perk, credit, and benefit for each one." },
+              { step: "02", Icon: IconList,       title: "See your full picture", desc: "Every credit, every perk, every entitlement — laid out clearly. See the total dollar value you're entitled to." },
+              { step: "03", Icon: IconCheckCircle, title: "Track what you've used", desc: "Mark perks as used. See what's left. Never let a credit expire again." },
+            ].map(({ step, Icon, title, desc }) => (
               <div key={step} className="bg-white rounded-3xl p-7 shadow-apple">
                 <div className="text-[11px] font-bold text-[#d4a843] tracking-widest uppercase mb-4">{step}</div>
-                <div className="text-4xl mb-4">{icon}</div>
+                <div className="mb-4 text-[#1d1d1f]"><Icon size={36}/></div>
                 <h3 className="text-[17px] font-semibold text-[#1d1d1f] mb-2">{title}</h3>
                 <p className="text-sm text-[#6e6e73] leading-relaxed">{desc}</p>
               </div>

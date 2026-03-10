@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
+import { IconEnvelope } from "@/components/Icon";
 import { createClient } from "@/lib/supabase";
 
 export default function SignUpPage() {
@@ -40,15 +42,12 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] flex flex-col items-center justify-center px-5">
-      <Link href="/" className="flex items-center gap-2 mb-10">
-        <span className="text-2xl">🐦</span>
-        <span className="font-semibold text-[#1d1d1f] text-lg tracking-tight">Perched</span>
-      </Link>
+      <Logo/>
 
       <div className="w-full max-w-sm bg-white rounded-3xl shadow-apple-md p-8">
         {sent ? (
           <div className="text-center">
-            <div className="text-5xl mb-4">📬</div>
+            <div className="mb-4 flex justify-center text-[#1d1d1f]"><IconEnvelope size={52}/></div>
             <h2 className="text-xl font-bold text-[#1d1d1f] mb-2">Check your inbox</h2>
             <p className="text-sm text-[#6e6e73] leading-relaxed">
               We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.

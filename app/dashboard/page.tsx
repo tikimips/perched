@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARDS, CARD_MAP, CATEGORIES, type Perk } from "@/lib/cards";
+import { CATEGORY_ICONS, IconPerch } from "@/components/Icon";
+import { Logo } from "@/components/Logo";
 
 function PerkRow({ perk, cardName, isUsed, onToggle }: {
   perk: Perk;
@@ -12,6 +14,7 @@ function PerkRow({ perk, cardName, isUsed, onToggle }: {
   onToggle: () => void;
 }) {
   const cat = CATEGORIES[perk.category];
+  const CatIcon = CATEGORY_ICONS[perk.category];
   return (
     <div className={`flex items-start gap-4 p-4 rounded-2xl transition-all ${isUsed ? "bg-[#f5f5f7] opacity-60" : "bg-white border border-black/[0.06] shadow-card hover:shadow-apple"}`}>
       <button
@@ -28,7 +31,7 @@ function PerkRow({ perk, cardName, isUsed, onToggle }: {
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <span className="text-xs mr-1.5">{cat.emoji}</span>
+            {CatIcon && <CatIcon size={14} className="mr-1.5 shrink-0 text-[#6e6e73]"/>}
             <span className="text-[15px] font-semibold text-[#1d1d1f]">{perk.name}</span>
           </div>
           <span className={`shrink-0 text-[15px] font-bold ${isUsed ? "text-[#aeaeb2] line-through" : "text-[#1d1d1f]"}`}>
@@ -147,19 +150,19 @@ export default function DashboardPage() {
 
   const filters = [
     { key: "all", label: "All" },
-    { key: "travel", label: "✈️ Travel" },
-    { key: "dining", label: "🍽️ Dining" },
-    { key: "lounge", label: "🛋️ Lounges" },
-    { key: "entertainment", label: "🎬 Entertainment" },
-    { key: "shopping", label: "🛍️ Shopping" },
-    { key: "wellness", label: "💆 Wellness" },
+    { key: "travel", label: "Travel" },
+    { key: "dining", label: "Dining" },
+    { key: "lounge", label: "Lounges" },
+    { key: "entertainment", label: "Entertainment" },
+    { key: "shopping", label: "Shopping" },
+    { key: "wellness", label: "Wellness" },
   ];
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-3">🐦</div>
+          <div className="mb-3 text-[#1d1d1f]"><IconPerch size={40}/></div>
           <div className="text-sm text-[#6e6e73] font-medium">Loading your perks…</div>
         </div>
       </div>
@@ -170,10 +173,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#f5f5f7]">
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🐦</span>
-            <span className="font-semibold text-[#1d1d1f] tracking-tight">Perched</span>
-          </div>
+          <Logo />
           <div className="flex items-center gap-3">
             <Link href="/dashboard/cards" className="text-sm font-medium text-[#007aff] hover:text-[#0056d3] transition-colors">
               My cards
@@ -222,14 +222,18 @@ export default function DashboardPage() {
               <span className="text-sm text-[#aeaeb2]">{filteredPerks.length} benefits</span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-3 mb-5">
-              {filters.map((f) => (
-                <button key={f.key} onClick={() => setActiveFilter(f.key)}
-                  className={`shrink-0 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all ${
-                    activeFilter === f.key ? "bg-[#1d1d1f] text-white" : "bg-white text-[#6e6e73] border border-black/[0.08] hover:bg-[#f5f5f7]"
-                  }`}>
-                  {f.label}
-                </button>
-              ))}
+              {filters.map((f) => {
+                const CatIcon = f.key !== "all" ? CATEGORY_ICONS[f.key] : null;
+                return (
+                  <button key={f.key} onClick={() => setActiveFilter(f.key)}
+                    className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all ${
+                      activeFilter === f.key ? "bg-[#1d1d1f] text-white" : "bg-white text-[#6e6e73] border border-black/[0.08] hover:bg-[#f5f5f7]"
+                    }`}>
+                    {CatIcon && <CatIcon size={13}/>}
+                    {f.label}
+                  </button>
+                );
+              })}
             </div>
             <div className="space-y-2.5">
               {filteredPerks.map((perk) => (
