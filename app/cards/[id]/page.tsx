@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARD_MAP, CATEGORIES, type Perk } from "@/lib/cards";
-import { CATEGORY_ICONS, IconWarning, IconChevronLeft } from "@/components/Icon";
+import { CATEGORY_ICONS, IconExclamationTriangle, IconChevronLeft } from "@/components/Icon";
 
 const FREQ_LABELS: Record<string, string> = {
   annual:      "Annual credit",
@@ -58,7 +58,7 @@ function PerkCard({ perk, isUsed, onToggle, isLoggedIn }: {
       <p className="text-sm text-[#6e6e73] leading-relaxed">{perk.description}</p>
       {perk.notes && (
         <div className="mt-3 flex items-start gap-1.5">
-          <IconWarning size={12} className="text-[#aeaeb2] shrink-0 mt-0.5"/>
+          <IconExclamationTriangle size={12} className="text-[#aeaeb2] shrink-0 mt-0.5"/>
           <p className="text-[11px] text-[#aeaeb2] leading-relaxed">{perk.notes}</p>
         </div>
       )}

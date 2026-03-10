@@ -1,7 +1,7 @@
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { CARDS } from "@/lib/cards";
-import { IconCreditCard, IconList, IconCheckCircle } from "@/components/Icon";
+import { IconCreditCard, IconList, IconCheckmarkCircle } from "@/components/Icon";
 import { HeroIllustration, WelcomeIllustration } from "@/components/HeroIllustration";
 
 const totalCards = CARDS.length;
@@ -87,7 +87,7 @@ export default function LandingPage() {
             {[
               { step: "01", Icon: IconCreditCard, title: "Select your cards", desc: "Pick the premium cards you carry. We pre-load every perk, credit, and benefit for each one." },
               { step: "02", Icon: IconList,       title: "See your full picture", desc: "Every credit, every perk, every entitlement — laid out clearly. See the total dollar value you're entitled to." },
-              { step: "03", Icon: IconCheckCircle, title: "Track what you've used", desc: "Mark perks as used. See what's left. Never let a credit expire again." },
+              { step: "03", Icon: IconCheckmarkCircle, title: "Track what you've used", desc: "Mark perks as used. See what's left. Never let a credit expire again." },
             ].map(({ step, Icon, title, desc }) => (
               <div key={step} className="bg-white rounded-3xl p-7 shadow-apple">
                 <div className="text-[11px] font-bold text-[#d4a843] tracking-widest uppercase mb-4">{step}</div>
