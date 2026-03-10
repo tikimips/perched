@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import { CARDS } from "@/lib/cards";
 import { Logo } from "@/components/Logo";
+import { HeroIllustration, WelcomeIllustration } from "@/components/HeroIllustration";
 
 // ─── Illustrations ────────────────────────────────────────────────────────────
 
@@ -139,8 +140,8 @@ export default function OnboardingPage() {
           </div>
 
           {/* Illustration */}
-          <div className="flex justify-center mb-8">
-            <WelcomeBird />
+          <div className="flex justify-center mb-6">
+            <HeroIllustration />
           </div>
 
           {/* Copy */}
@@ -278,7 +279,7 @@ export default function OnboardingPage() {
         </div>
 
         <div className="flex justify-center mb-6">
-          <SuccessIllustration />
+          <WelcomeIllustration />
         </div>
 
         <h1 className="text-[32px] font-bold text-[#1d1d1f] leading-tight mb-3">

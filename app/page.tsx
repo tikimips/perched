@@ -1,89 +1,8 @@
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { CARDS } from "@/lib/cards";
-import { IconPerch, IconCreditCard, IconList, IconCheckCircle } from "@/components/Icon";
-
-// Simple bird illustration
-function BirdIllustration() {
-  return (
-    <svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      {/* Branch */}
-      <path d="M20 160 Q80 155 140 158 Q200 161 260 156" stroke="#d4a843" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.4"/>
-      {/* Leaves */}
-      <ellipse cx="65" cy="148" rx="14" ry="7" fill="#34c759" opacity="0.3" transform="rotate(-15 65 148)"/>
-      <ellipse cx="195" cy="145" rx="12" ry="6" fill="#34c759" opacity="0.25" transform="rotate(10 195 145)"/>
-      {/* Bird body */}
-      <ellipse cx="140" cy="128" rx="28" ry="20" fill="#1d1d1f"/>
-      {/* Bird head */}
-      <circle cx="163" cy="112" r="14" fill="#1d1d1f"/>
-      {/* Wing highlight */}
-      <path d="M118 122 Q130 115 148 120" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.2" fill="none"/>
-      {/* Eye */}
-      <circle cx="168" cy="109" r="4" fill="white"/>
-      <circle cx="169" cy="109" r="2.5" fill="#1d1d1f"/>
-      <circle cx="170" cy="108" r="1" fill="white"/>
-      {/* Beak */}
-      <path d="M175 112 L183 115 L175 117 Z" fill="#d4a843"/>
-      {/* Tail */}
-      <path d="M114 132 Q100 140 92 148 Q105 143 116 138" fill="#1d1d1f"/>
-      {/* Feet */}
-      <line x1="134" y1="148" x2="131" y2="160" stroke="#1d1d1f" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="146" y1="148" x2="144" y2="160" stroke="#1d1d1f" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="131" y1="160" x2="124" y2="164" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="131" y1="160" x2="131" y2="165" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="131" y1="160" x2="137" y2="164" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="144" y1="160" x2="138" y2="164" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="144" y1="160" x2="144" y2="165" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="144" y1="160" x2="150" y2="164" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-      {/* Floating sparkles */}
-      <circle cx="88" cy="88" r="2.5" fill="#d4a843" opacity="0.6"/>
-      <circle cx="200" cy="75" r="2" fill="#d4a843" opacity="0.4"/>
-      <circle cx="220" cy="105" r="1.5" fill="#d4a843" opacity="0.5"/>
-      <circle cx="72" cy="105" r="1.5" fill="#d4a843" opacity="0.4"/>
-      {/* Small star shapes */}
-      <path d="M76 70 L77.5 74 L82 74 L78.5 76.5 L80 81 L76 78.5 L72 81 L73.5 76.5 L70 74 L74.5 74 Z" fill="#d4a843" opacity="0.3"/>
-    </svg>
-  );
-}
-
-// Card stack illustration
-function CardStackIllustration() {
-  return (
-    <svg width="320" height="210" viewBox="0 0 320 210" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      {/* Card 3 (back) */}
-      <rect x="40" y="40" width="220" height="138" rx="16" fill="#1c4b82" opacity="0.5" transform="rotate(-6 40 40)"/>
-      {/* Card 2 (middle) */}
-      <rect x="50" y="35" width="220" height="138" rx="16" fill="#c9a84c" opacity="0.75" transform="rotate(2 50 35)"/>
-      {/* Card 1 (front - Platinum) */}
-      <rect x="55" y="32" width="220" height="138" rx="16" fill="url(#platGrad)"/>
-      <defs>
-        <linearGradient id="platGrad" x1="55" y1="32" x2="275" y2="170" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#8B8FA8"/>
-          <stop offset="0.5" stopColor="#6B7080"/>
-          <stop offset="1" stopColor="#9B9FB8"/>
-        </linearGradient>
-      </defs>
-      {/* Card chip */}
-      <rect x="82" y="70" width="28" height="22" rx="4" fill="#d4a843" opacity="0.7"/>
-      <line x1="82" y1="81" x2="110" y2="81" stroke="#b8892a" strokeWidth="1" opacity="0.5"/>
-      <line x1="96" y1="70" x2="96" y2="92" stroke="#b8892a" strokeWidth="1" opacity="0.5"/>
-      {/* Card number dots */}
-      <circle cx="82" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="91" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="100" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="109" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="124" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="133" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="142" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      <circle cx="151" cy="115" r="2.5" fill="white" opacity="0.5"/>
-      {/* Card logo area */}
-      <circle cx="238" cy="70" r="14" fill="white" opacity="0.1"/>
-      <circle cx="251" cy="70" r="14" fill="white" opacity="0.07"/>
-      {/* Perched logo on card */}
-      <text x="82" y="56" fill="white" opacity="0.9" fontSize="11" fontWeight="600" fontFamily="-apple-system, system-ui, sans-serif">PERCHED</text>
-    </svg>
-  );
-}
+import { IconCreditCard, IconList, IconCheckCircle } from "@/components/Icon";
+import { HeroIllustration, WelcomeIllustration } from "@/components/HeroIllustration";
 
 const totalCards = CARDS.length;
 const totalPerkValue = CARDS.reduce((sum, c) => sum + c.totalPerkValue, 0);
@@ -96,8 +15,7 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🐦</span>
-            <span className="font-semibold text-[#1d1d1f] tracking-tight text-[17px]">Perched</span>
+            <Logo />
           </div>
           <div className="flex items-center gap-3">
             <Link href="/auth/signin" className="text-sm text-[#6e6e73] hover:text-[#1d1d1f] transition-colors font-medium">
@@ -135,10 +53,10 @@ export default function LandingPage() {
         </div>
 
         {/* Hero illustration */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-8">
           <div className="relative">
-            <div className="absolute inset-0 bg-[#d4a843]/10 rounded-full blur-3xl scale-75"/>
-            <BirdIllustration />
+            <div className="absolute inset-0 bg-[#d4a843]/8 rounded-full blur-3xl scale-90"/>
+            <HeroIllustration />
           </div>
         </div>
 
@@ -222,8 +140,8 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="bg-[#1d1d1f] py-20 px-5">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="flex justify-center mb-6">
-            <CardStackIllustration />
+          <div className="flex justify-center mb-6 opacity-80">
+            <WelcomeIllustration />
           </div>
           <h2 className="text-4xl font-bold text-white mb-4">
             Stop leaving money on the table.
