@@ -205,7 +205,7 @@ export default function LandingPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {CARDS.map((card) => (
-              <div key={card.id} className="bg-white border border-black/[0.06] rounded-3xl p-5 shadow-card hover:shadow-apple-md transition-all hover:-translate-y-0.5">
+              <Link key={card.id} href={`/cards/${card.id}`} className="block bg-white border border-black/[0.06] rounded-3xl p-5 shadow-card hover:shadow-apple-md transition-all hover:-translate-y-0.5">
                 {/* Mini card visual */}
                 <div className="w-full h-14 rounded-xl mb-4 flex items-center px-4" style={{ background: card.gradient }}>
                   <div>
@@ -226,7 +226,7 @@ export default function LandingPage() {
                 <div className="mt-3 pt-3 border-t border-[#f5f5f7]">
                   <div className="text-xs text-[#aeaeb2]">{card.perks.length} perks tracked</div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

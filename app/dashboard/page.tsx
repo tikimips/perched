@@ -248,7 +248,7 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-4">
               {myCards.map((card) => (
-                <div key={card.id} className="bg-white rounded-3xl shadow-card border border-black/[0.06] overflow-hidden">
+                <Link key={card.id} href={`/cards/${card.id}`} className="block bg-white rounded-3xl shadow-card border border-black/[0.06] overflow-hidden hover:shadow-apple transition-all">
                   <div className="h-16 flex items-end p-4" style={{ background: card.gradient }}>
                     <div>
                       <div className="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style={{ color: card.accentColor }}>{card.issuer}</div>
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                         className="w-full bg-[#f5f5f7] rounded-xl h-8 px-3 text-xs text-[#1d1d1f] placeholder:text-[#aeaeb2] outline-none focus:ring-2 focus:ring-[#007aff]/20 transition-all"/>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
